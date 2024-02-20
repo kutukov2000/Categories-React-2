@@ -1,10 +1,11 @@
-import { Button, Table } from "antd";
+import { Button, Table, message } from "antd";
 import { Link } from "react-router-dom";
 import { ICategory } from "./types";
 import { useEffect, useState } from "react";
 import { APP_ENV } from "../../env";
 import http_common from "../../http_common";
 import { ColumnsType } from "antd/es/table";
+import { DeleteOutlined } from '@ant-design/icons';
 
 const CategoryListPage = () => {
     const [list, setList] = useState<ICategory[]>([]);
@@ -17,6 +18,18 @@ const CategoryListPage = () => {
                 setList(resp.data);
             });
     }, []);
+
+    const deleteCategory = async (id: number) => {
+        try {
+            await http_common.delete(`/api/categories/${id}`);
+        }
+        catch (ex) {
+            message.error('Category deleting error!');
+            return;
+        }
+
+        setList(prevCategories => prevCategories.filter(category => category.id !== id));
+    }
 
     const columns: ColumnsType<ICategory> = [
         {
@@ -39,6 +52,21 @@ const CategoryListPage = () => {
         {
             title: 'Description',
             dataIndex: 'description'
+        },
+        {
+            title: 'Actions',
+            dataIndex: 'id',
+            render: (id) => {
+                return (
+                    <div style={{ display: 'flex', gap: '5px' }}>
+                        <Button type="primary"
+                            icon={<DeleteOutlined />}
+                            size="large"
+                            style={{ backgroundColor: '#8c1c1c' }}
+                            onClick={() => { deleteCategory(id) }} />
+                    </div>
+                );
+            }
         }
     ];
 
