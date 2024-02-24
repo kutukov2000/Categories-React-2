@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { APP_ENV } from "../../env";
 import http_common from "../../http_common";
 import { ColumnsType } from "antd/es/table";
-import { DeleteOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 
 const CategoryListPage = () => {
     const [list, setList] = useState<ICategory[]>([]);
@@ -59,6 +59,12 @@ const CategoryListPage = () => {
             render: (id) => {
                 return (
                     <div style={{ display: 'flex', gap: '5px' }}>
+                        <Link to={`category/edit/${id}`}>
+                            <Button type="primary"
+                                icon={<EditOutlined />}
+                                size="large"
+                                style={{ backgroundColor: '#eb8934' }} />
+                        </Link>
                         <Button type="primary"
                             icon={<DeleteOutlined />}
                             size="large"
