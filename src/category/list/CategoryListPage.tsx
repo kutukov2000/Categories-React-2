@@ -1,90 +1,43 @@
-import { Button, Table, message } from "antd";
-import { Link } from "react-router-dom";
-import { ICategory } from "./types";
 import { useEffect, useState } from "react";
-import { APP_ENV } from "../../env";
+import { ICategory } from "./types";
+import { Col, Row } from "antd";
 import http_common from "../../http_common";
-import { ColumnsType } from "antd/es/table";
-import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import CategoryCard from "./CategoryCard";
 
 const CategoryListPage = () => {
-    const [list, setList] = useState<ICategory[]>([]);
 
-    const serverURL = APP_ENV.BASE_URL + "/uploading/150_";
+    const [categories, setCategories] = useState<ICategory[]>([]);
 
     useEffect(() => {
-        http_common.get("/api/categories")
-            .then(resp => {
-                setList(resp.data);
-            });
-    }, []);
+        http_common.get<ICategory[]>("/api/categories")
+            .then(response => setCategories(response.data));
+    }, [])
 
-    const deleteCategory = async (id: number) => {
+    const handleDelete = async (id: number) => {
         try {
             await http_common.delete(`/api/categories/${id}`);
+            setCategories(categories.filter(x => x.id != id));
         }
-        catch (ex) {
-            message.error('Category deleting error!');
-            return;
+        catch (error) {
+            console.log("Error delete", error);
         }
-
-        setList(prevCategories => prevCategories.filter(category => category.id !== id));
     }
-
-    const columns: ColumnsType<ICategory> = [
-        {
-            title: "#",
-            dataIndex: 'id'
-        },
-        {
-            title: 'Image',
-            dataIndex: 'image',
-            render: (imageName: string) => {
-                return (
-                    <img src={serverURL + imageName} alt="Category image" width={150} />
-                );
-            }
-        },
-        {
-            title: 'Name',
-            dataIndex: 'name'
-        },
-        {
-            title: 'Description',
-            dataIndex: 'description'
-        },
-        {
-            title: 'Actions',
-            dataIndex: 'id',
-            render: (id) => {
-                return (
-                    <div style={{ display: 'flex', gap: '5px' }}>
-                        <Link to={`category/edit/${id}`}>
-                            <Button type="primary"
-                                icon={<EditOutlined />}
-                                size="large"
-                                style={{ backgroundColor: '#eb8934' }} />
-                        </Link>
-                        <Button type="primary"
-                            icon={<DeleteOutlined />}
-                            size="large"
-                            style={{ backgroundColor: '#8c1c1c' }}
-                            onClick={() => { deleteCategory(id) }} />
-                    </div>
-                );
-            }
-        }
-    ];
 
     return (
         <>
-            <h1>Categories List</h1>
-            <Table dataSource={list} columns={columns} rowKey="id" />
-            <Link to={"category/create"}>
-                <Button type="primary" size="large">
-                    Add
-                </Button>
-            </Link>
+            <Row gutter={16}>
+                <Col span={24}>
+                    <Row>
+                        {categories.length === 0 ? (
+                            <h2>Categories list is empty</h2>
+                        ) : (
+                            categories.map((item) =>
+                                <CategoryCard key={item.id} item={item} handleDelete={handleDelete} />,
+                            )
+                        )}
+                    </Row>
+                </Col>
+            </Row>
         </>
     );
 }
