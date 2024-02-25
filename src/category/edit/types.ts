@@ -1,5 +1,6 @@
 export interface ICategoryEdit {
+    id: number;
     name: string;
-    description:string;
-    image: File;
+    description: string;
+    file: File | undefined;
 }
