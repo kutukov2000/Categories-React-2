@@ -13,5 +13,6 @@ export interface IGetCategories {
 export interface ICategorySearch {
     name: string,
     page: number,
-    size: number
+    size: number,
+    sort: string
 }

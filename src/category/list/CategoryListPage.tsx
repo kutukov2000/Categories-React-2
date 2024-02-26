@@ -20,7 +20,8 @@ const CategoryListPage = () => {
     const [search, setSearch] = useState<ICategorySearch>({
         name: searchParams.get("name") || "",
         page: Number(searchParams.get("page")) || 1,
-        size: Number(searchParams.get("size")) || 2
+        size: Number(searchParams.get("size")) || 2,
+        sort: searchParams.get("sort") || ""
     });
 
     useEffect(() => {
