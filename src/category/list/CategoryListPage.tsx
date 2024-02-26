@@ -4,6 +4,7 @@ import { Col, Pagination, Row } from "antd";
 import http_common from "../../http_common";
 import CategoryCard from "./CategoryCard";
 import { useSearchParams } from "react-router-dom";
+import SearchBlock from "./featured/SearchBlock";
 
 const CategoryListPage = () => {
 
@@ -65,6 +66,7 @@ const CategoryListPage = () => {
 
     return (
         <>
+            <SearchBlock searchParams={searchParams} setSearch={setSearch} />
             <Row gutter={16}>
                 <Col span={24}>
                     <Row>
